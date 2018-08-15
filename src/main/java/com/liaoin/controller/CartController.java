@@ -6,6 +6,7 @@ import com.liaoin.entity.ProductList;
 import com.liaoin.entity.User;
 import com.liaoin.service.CartService;
 import com.liaoin.service.ProductListService;
+import com.liaoin.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,10 @@ public class CartController {
     private CartService cartService;
     @Autowired
     private ProductListService productListService;
+    @Autowired
+    private ProductService productService;
 
-
-    @ApiOperation("加入购物车")
+    @ApiOperation("加入购物")
     @RequestMapping(value = "/addToCart", method = RequestMethod.GET)
     public Result addToCart(HttpSession session, @RequestParam Integer productList_Id, @RequestParam BigDecimal num) throws IOException {
         // 1.判断用户是否存在
