@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liaoin.mapper.ProductListMapper">
+  <resultMap id="BaseResultMap" type="com.liaoin.entity.ProductList">
+    <id column="productlist_id" jdbcType="INTEGER" property="productListId"/>
+    <result column="productlist_name" jdbcType="VARCHAR" property="productListName" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="productlist_price" jdbcType="DOUBLE" property="productListPrice" />
+    <result column="productlist_details" jdbcType="VARCHAR" property="productListDetails" />
+    <result column="productlist_rep" jdbcType="VARCHAR" property="productListRep" />
+    <result column="productlist_hot" jdbcType="VARCHAR" property="productListHot" />
+    <result column="productlist_picture" jdbcType="VARCHAR" property="productListPicture"/>
+    <!--多对1关系映射-->
+    <association property="product" column="productId" javaType="com.liaoin.entity.Product">
+      <id column="product_id" jdbcType="INTEGER" property="productId" />
+      <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    </association>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    productlist_id, productlist_name, product_id, productlist_price, productlist_details, 
+    productlist_rep, productlist_hot, productlist_picture
+  </sql>
+  <select id="selectByExample" parameterType="com.liaoin.entity.ProductListExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from "productlist"
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `productlist`
+    where productlist_id = #{productlistId,jdbcType=INTEGER}
+  </select>
+  <select id="selectHotProductList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from `productlist`
+    where productlist_hot = 019 and product_id =  #{productId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from productlist`
+    where productlist_id = #{productlistId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liaoin.entity.ProductListExample">
+    delete from "productlist"
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liaoin.entity.ProductList">
+    insert into `productlist` ( productlist_name, product_id,
+      productlist_price, productlist_details, productlist_rep,
+      productlist_hot, productlist_picture)
+    values ( #{productlistName,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER},
+      #{productlistPrice,jdbcType=DOUBLE}, #{productlistDetails,jdbcType=VARCHAR}, #{productlistRep,jdbcType=VARCHAR},
+      #{productlistHot,jdbcType=VARCHAR}, #{productlistPicture,jdbcType=VARCHAR})
+  </insert>
+<insert id="insertProductList" parameterType="com.liaoin.entity.ProductList">
+    insert into `productlist` ( productlist_name,productlist_price)
+    values ( #{productlistName,jdbcType=VARCHAR}, #{productlistPrice,jdbcType=DOUBLE})
+</insert>
+  <insert id="insertSelective" parameterType="com.liaoin.entity.ProductList">
+    insert into `productlist`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productlistId != null">
+        productlist_id,
+      </if>
+      <if test="productlistName != null">
+        productlist_name,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productlistPrice != null">
+        productlist_price,
+      </if>
+      <if test="productlistDetails != null">
+        productlist_details,
+      </if>
+      <if test="productlistRep != null">
+        productlist_rep,
+      </if>
+      <if test="productlistHot != null">
+        productlist_hot,
+      </if>
+      <if test="productlistPicture != null">
+        productlist_picture,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productlistId != null">
+        #{productlistId,jdbcType=INTEGER},
+      </if>
+      <if test="productlistName != null">
+        #{productlistName,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="productlistPrice != null">
+        #{productlistPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="productlistDetails != null">
+        #{productlistDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="productlistRep != null">
+        #{productlistRep,jdbcType=VARCHAR},
+      </if>
+      <if test="productlistHot != null">
+        #{productlistHot,jdbcType=VARCHAR},
+      </if>
+      <if test="productlistPicture != null">
+        #{productlistPicture,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liaoin.entity.ProductListExample" resultType="java.lang.Long">
+    select count(*) from "productlist"
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update "productlist"
+    <set>
+      <if test="record.productlistId != null">
+        productlist_id = #{record.productlistId,jdbcType=INTEGER},
+      </if>
+      <if test="record.productlistName != null">
+        productlist_name = #{record.productlistName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productId != null">
+        product_id = #{record.productId,jdbcType=INTEGER},
+      </if>
+      <if test="record.productlistPrice != null">
+        productlist_price = #{record.productlistPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="record.productlistDetails != null">
+        productlist_details = #{record.productlistDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productlistRep != null">
+        productlist_rep = #{record.productlistRep,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productlistHot != null">
+        productlist_hot = #{record.productlistHot,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productlistPicture != null">
+        productlist_picture = #{record.productlistPicture,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update "productlist"
+    set productlist_id = #{record.productlistId,jdbcType=INTEGER},
+      productlist_name = #{record.productlistName,jdbcType=VARCHAR},
+      product_id = #{record.productId,jdbcType=INTEGER},
+      productlist_price = #{record.productlistPrice,jdbcType=DOUBLE},
+      productlist_details = #{record.productlistDetails,jdbcType=VARCHAR},
+      productlist_rep = #{record.productlistRep,jdbcType=VARCHAR},
+      productlist_hot = #{record.productlistHot,jdbcType=VARCHAR},
+      productlist_picture = #{record.productlistPicture,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liaoin.entity.ProductList">
+    update "productlist"
+    <set>
+      <if test="productlistName != null">
+        productlist_name = #{productlistName,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="productlistPrice != null">
+        productlist_price = #{productlistPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="productlistDetails != null">
+        productlist_details = #{productlistDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="productlistRep != null">
+        productlist_rep = #{productlistRep,jdbcType=VARCHAR},
+      </if>
+      <if test="productlistHot != null">
+        productlist_hot = #{productlistHot,jdbcType=VARCHAR},
+      </if>
+      <if test="productlistPicture != null">
+        productlist_picture = #{productlistPicture,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where productlist_id = #{productlistId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liaoin.entity.ProductList">
+    update `productlist`
+    set productlist_name = #{productlistName,jdbcType=VARCHAR},
+    product_id = #{productId,jdbcType=INTEGER},
+    productlist_price = #{productlistPrice,jdbcType=DOUBLE},
+    productlist_details = #{productlistDetails,jdbcType=VARCHAR},
+    productlist_rep = #{productlistRep,jdbcType=VARCHAR},
+    productlist_hot = #{productlistHot,jdbcType=VARCHAR},
+    productlist_picture = #{productlistPicture,jdbcType=VARCHAR}
+    where productlist_id = #{productlistId,jdbcType=INTEGER}
+  </update>
+</mapper>
